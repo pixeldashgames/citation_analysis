@@ -2,9 +2,18 @@
 import spacy
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from nltk.tokenize import word_tokenize
+import nltk
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
+    nltk.download('wordnet')
+    nltk.download('stopwords')
+    nltk.download('averaged_perceptron_tagger')
+    
 
 # Loading the English language model from spaCy
-nlp = spacy.load('en_core_web_lm')
+nlp = spacy.load('en_core_web_sm')
 
 
 # Function to clean the input text
@@ -53,3 +62,28 @@ def detect_plagiarism(text1, text2):
     citation_similarity = calculate_similarity(' '.join(citations1), ' '.join(citations2))
     # Returning the similarity score
     return citation_similarity
+
+
+import PyPDF2
+
+if __name__ == "__main__":
+    # Open the first PDF file in read-binary mode
+    with open('test1.pdf', 'rb') as file:
+        # Create a PDF file reader object
+        reader = PyPDF2.PdfReader(file)
+        # Read the content of the PDF file and remove newline characters and other special symbols
+        text1 = ' '.join([reader.pages[i].extract_text()
+                         .replace('\n', ' ')
+                         .replace('\r', ' ')
+                          for i in range(len(reader.pages))])
+
+    # Open the second PDF file in read-binary mode
+    with open('test2.pdf', 'rb') as file:
+        # Create a PDF file reader object
+        reader = PyPDF2.PdfReader(file)
+        # Read the content of the PDF file and remove newline characters and other special symbols
+        text2 = ' '.join([reader.pages[i].extract_text()
+                         .replace('\n', ' ')
+                         .replace('\r', ' ')
+                          for i in range(len(reader.pages))])
+    print(detect_plagiarism(text1, text2))
