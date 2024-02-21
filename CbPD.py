@@ -7,7 +7,7 @@ nlp = spacy.load('en_core_web_sm')
 
 
 # Function to clean the input text
-def tokenize_text(text) -> Doc:
+def tokenize_text(text: str) -> Doc:
     # Creating a Doc object
     return nlp(text)
 
@@ -41,11 +41,13 @@ def calculate_similarity(text1:str, text2:str)->float:
 
 
 # Function to detect plagiarism between two texts
-def detect_plagiarism(doc1:Doc, doc2:Doc):
+def detect_plagiarism(text1:str, text2:str):
     '''
-    This is the main function of this module, it takes two Doc objects as an input and return the cosine similarity bewteen
-    each one using the spaCy library
+    This is the main function of this module, it takes two strings as an input and return the cosine similarity bewteen
+    the citations of each one using the spaCy library
     '''
+    doc1 = tokenize_text(text1)
+    doc2 = tokenize_text(text2)
     # Extracting citations from the cleaned texts
     citations1 = extract_citations(doc1)
     citations2 = extract_citations(doc2)
