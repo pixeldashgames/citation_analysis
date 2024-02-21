@@ -20,6 +20,8 @@ def extract_citations(doc: Doc)->str:
     """
     # Extracting entities that are either works of art or organizations
     citations = [ent.text for ent in doc.ents if ent.label_ in ['WORK_OF_ART', 'ORG']]
+    if len(citations)==0:
+        return ""
     # Removing citations that are too short
     citations = [citation for citation in citations if len(citation.split()) > 2]
     # Joining the citations into a single string
@@ -51,6 +53,8 @@ def detect_plagiarism(text1:str, text2:str):
     # Extracting citations from the cleaned texts
     citations1 = extract_citations(doc1)
     citations2 = extract_citations(doc2)
+    if len(citations1)==0 or len(citations2)==0:
+        return 0
     # Calculating the similarity between the citations
     citation_similarity = calculate_similarity(citations1,citations2)
     # Returning the similarity score
